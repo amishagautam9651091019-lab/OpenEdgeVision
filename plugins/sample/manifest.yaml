@@ -1,0 +1,15 @@
+id: sample-detector
+name: Sample Detector
+version: 0.1.0
+api_version: 1
+task_type: object_detection
+runtime:
+  type: python
+  entrypoint: plugin.py
+input:
+  type: video_stream
+output:
+  type: detection_event
+config:
+  confidence: 0.5
+  frame_interval: 5

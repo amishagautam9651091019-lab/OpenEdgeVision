@@ -1,0 +1,36 @@
+authMethod: internal
+
+authInternalUsers:
+  - user: any
+    pass:
+    ips: []
+    permissions:
+      - action: publish
+        path:
+      - action: read
+        path:
+      - action: playback
+        path:
+      - action: api
+
+api: yes
+apiAddress: :9997
+
+rtsp: yes
+rtspAddress: :8554
+
+hls: yes
+hlsAddress: :8888
+
+webrtc: yes
+webrtcAddress: :8889
+
+record: no
+recordPath: /recordings/%path/%Y-%m-%d_%H-%M-%S-%f
+
+paths:
+  park01:
+    source: publisher
+
+  drone01:
+    source: publisher
