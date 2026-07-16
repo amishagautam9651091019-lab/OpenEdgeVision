@@ -1,21 +1,26 @@
 from fastapi import FastAPI
 
+from app.config import settings
 from app.routers.health import router as health_router
+from app.routers.streams import router as streams_router
 
 
 app = FastAPI(
     title="OpenEdge Vision API",
-    version="0.1.0",
-    description="OpenEdge Vision Edge AI Platform",
+    version=settings.version,
+    description=(
+        "OpenEdge Vision edge AI platform backend API"
+    ),
 )
 
 app.include_router(health_router)
+app.include_router(streams_router)
 
 
-@app.get("/")
-def root() -> dict:
+@app.get("/", tags=["Root"])
+def root() -> dict[str, str]:
     return {
         "name": "OpenEdge Vision",
-        "version": "0.1.0",
+        "version": settings.version,
         "status": "running",
     }
