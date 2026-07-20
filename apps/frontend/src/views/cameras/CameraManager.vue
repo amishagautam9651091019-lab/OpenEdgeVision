@@ -49,6 +49,23 @@
             </el-tag>
           </template>
         </el-table-column>
+	 <el-table-column
+           label="操作"
+           width="160"
+           fixed="right"
+           >
+             <template #default="{ row }">
+                <el-button
+                   type="primary"
+                   link
+                   :disabled="!row.ready"
+                   @click="openPreview(row.name)"
+                >
+                 预览
+              </el-button>
+             </template>
+           </el-table-column>
+
 
         <el-table-column label="编码" width="120">
           <template #default="{ row }">
@@ -73,7 +90,7 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
-
+import { useRouter } from 'vue-router'
 import { getStreams, type StreamInfo } from '@/api/streams'
 
 console.log('[CameraManager] script executed')
@@ -81,8 +98,19 @@ console.log('[CameraManager] script executed')
 const streams = ref<StreamInfo[]>([])
 const loading = ref(false)
 const errorMessage = ref('')
+const router = useRouter()
 
 let refreshTimer: ReturnType<typeof setInterval> | undefined
+
+function openPreview(streamName:string){
+        router.push({
+           name:'camera-preview',
+           params:{
+                name:streamName,
+                },
+                })
+                }
+
 
 async function loadStreams(): Promise<void> {
   console.log('[CameraManager] loadStreams started')
@@ -95,7 +123,7 @@ async function loadStreams(): Promise<void> {
 
     console.log('[CameraManager] API response:', response)
 
-    streams.value = response.data.streams
+    streams.value = response.streams
 
     console.log('[CameraManager] stream count:', streams.value.length)
   } catch (error) {

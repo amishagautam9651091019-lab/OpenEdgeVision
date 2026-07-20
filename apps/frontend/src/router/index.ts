@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import AppMainlayout from '@/layout/AppMainlayout.vue'
 import DashboardView from '@/views/dashboard/DashboardView.vue'
 import CameraManager from '@/views/cameras/CameraManager.vue'
+import CameraPreview from '@/views/cameras/CameraPreview.vue'
 import ComingSoonView from '@/views/common/ComingSoonView.vue'
 
 const routes = [
@@ -19,6 +20,11 @@ const routes = [
         path: 'cameras',
         name: 'cameras',
         component: CameraManager,
+      },
+      {
+	 path:'cameras/:name/preview',
+	 name:'camera-preview',
+	 component:CameraPreview,
       },
       {
         path: 'plugins',

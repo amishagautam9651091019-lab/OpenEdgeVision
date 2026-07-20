@@ -1,0 +1,258 @@
+<template>
+  <div class="camera-preview">
+
+    <!-- 顶部标题 -->
+    <el-page-header
+      content="视频预览"
+      @back="goBack"
+    />
+
+    <el-card class="preview-card">
+
+      <!-- 视频标题 -->
+      <template #header>
+
+        <div class="header">
+
+          <div>
+            <span class="title">
+              {{ stream.name }}
+            </span>
+
+            <el-tag
+              class="tag"
+              type="success"
+              v-if="stream.ready"
+            >
+              在线
+            </el-tag>
+
+            <el-tag
+              class="tag"
+              type="danger"
+              v-else
+            >
+              离线
+            </el-tag>
+
+          </div>
+
+
+          <el-tag type="info">
+            WebRTC
+          </el-tag>
+
+        </div>
+
+      </template>
+
+
+      <!-- 视频 -->
+      <VideoPlayer
+        :stream-name="streamName"
+      />
+
+
+    </el-card>
+
+
+
+    <!-- 视频信息 -->
+
+    <el-card class="info-card">
+
+      <template #header>
+        视频信息
+      </template>
+
+
+      <el-descriptions
+        :column="2"
+        border
+      >
+
+        <el-descriptions-item label="名称">
+          {{ stream.name }}
+        </el-descriptions-item>
+
+
+        <el-descriptions-item label="类型">
+          {{ stream.source_type || '-' }}
+        </el-descriptions-item>
+
+
+        <el-descriptions-item label="协议">
+          RTSP
+        </el-descriptions-item>
+
+
+        <el-descriptions-item label="编码">
+          {{ stream.tracks?.join(',') || '-' }}
+        </el-descriptions-item>
+
+
+        <el-descriptions-item label="RTSP地址">
+          {{ stream.rtsp_url }}
+        </el-descriptions-item>
+
+
+        <el-descriptions-item label="WebRTC地址">
+          {{ stream.webrtc_url }}
+        </el-descriptions-item>
+
+
+      </el-descriptions>
+
+
+    </el-card>
+
+
+  </div>
+</template>
+
+
+
+<script setup lang="ts">
+
+import {
+  computed,
+  onMounted,
+  ref
+} from 'vue'
+
+
+import {
+  useRoute,
+  useRouter
+} from 'vue-router'
+
+
+import VideoPlayer from '@/components/video/VideoPlayer.vue'
+
+
+import {
+  getStreams,
+  type StreamInfo
+} from '@/api/streams'
+
+
+
+const route = useRoute()
+
+const router = useRouter()
+
+
+
+const streams = ref<StreamInfo[]>([])
+
+
+
+const streamName = computed(()=>{
+
+  return String(route.params.name)
+
+})
+
+
+
+const stream = computed(()=>{
+
+  return (
+    streams.value.find(
+      item =>
+        item.name === streamName.value
+    )
+    ||
+    {
+      name:streamName.value,
+      ready:false,
+      tracks:[]
+    }
+  )
+
+})
+
+
+
+async function loadStream(){
+
+  const res = await getStreams()
+
+  streams.value = res.streams
+
+}
+
+
+
+function goBack(){
+
+  router.push('/cameras')
+
+}
+
+
+
+onMounted(()=>{
+
+  loadStream()
+
+})
+
+
+
+</script>
+
+
+
+<style scoped>
+
+
+.camera-preview{
+
+padding:20px;
+
+}
+
+
+.preview-card{
+
+margin-top:20px;
+
+}
+
+
+.info-card{
+
+margin-top:20px;
+
+}
+
+
+.header{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+}
+
+
+.title{
+
+font-size:18px;
+
+font-weight:bold;
+
+}
+
+
+.tag{
+
+margin-left:10px;
+
+}
+
+
+</style>
