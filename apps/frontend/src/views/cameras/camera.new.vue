@@ -33,7 +33,7 @@ async function loadStreams(){
 
 
         streams.value =
-            res.data.streams
+            res.streams
 
 
     }

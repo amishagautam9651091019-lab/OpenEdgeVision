@@ -1,23 +1,44 @@
+# Python
 __pycache__/
-*.py[cod]
-*.db
-*.sqlite
-*.log
-.env
+*.pyc
+*.pyo
+
+# VirtualEnv
 .venv/
 venv/
-node_modules/
+
+# VSCode
+.vscode/
+
+# Logs
+logs/
+*.log
+
+# Models
+models/*.pt
+models/*.onnx
+
+# Dataset
+datasets/
+
+# Docker
+*.tar
+
+# Linux
+.DS_Store
+
+# pytest
+.pytest_cache/
+
+# build
 dist/
 build/
-.idea/
-logs/*
-!logs/.gitkeep
-data/recordings/*
-!data/recordings/.gitkeep
-data/snapshots/*
-!data/snapshots/.gitkeep
-data/events/*
-!data/events/.gitkeep
-models/**/*.onnx
-models/**/*.engine
-models/**/*.rknn
+
+# node
+node_modules/
+
+# env
+.env
+
+# media
+data/recordings/

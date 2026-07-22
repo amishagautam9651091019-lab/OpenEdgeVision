@@ -1,0 +1,59 @@
+.
+├── app
+│   ├── config.py
+│   ├── core
+│   │   └── stream_config.py
+│   ├── __init__.py
+│   ├── __init__.pyc
+│   ├── main.py
+│   ├── models
+│   │   └── __init__.py
+│   ├── plugins
+│   │   ├── base.py
+│   │   ├── builtin
+│   │   ├── __init__.py
+│   │   ├── __pycache__
+│   │   └── registry.py
+│   ├── __pycache__
+│   │   ├── config.cpython-312.pyc
+│   │   ├── __init__.cpython-312.pyc
+│   │   ├── main.cpython-312.pyc
+│   │   └── schemas.cpython-312.pyc
+│   ├── routers
+│   │   ├── health.py
+│   │   ├── __init__.py
+│   │   ├── plugins.py
+│   │   ├── __pycache__
+│   │   └── streams.py
+│   ├── schemas
+│   │   ├── __init__.py
+│   │   ├── plugin.py
+│   │   ├── __pycache__
+│   │   └── stream.py
+│   ├── services
+│   │   ├── frame_provider_service.py
+│   │   ├── __init__.py
+│   │   ├── mediamtx.py
+│   │   ├── plugin_service.py
+│   │   ├── __pycache__
+│   │   └── stream_service.py
+│   ├── utils
+│   │   ├── __init__.py
+│   │   ├── models
+│   │   ├── routers
+│   │   └── services
+│   └── video
+│       ├── frame_provider.py
+│       ├── __init__.py
+│       └── __pycache__
+├── requirements.txt
+├── test-mediamtxcli.py
+├── tests
+│   ├── __init__.py
+│   ├── manual
+│   │   ├── __init__.py
+│   │   ├── __pycache__
+│   │   └── test_frame_provider.py
+│   └── __pycache__
+│       └── __init__.cpython-312.pyc
+

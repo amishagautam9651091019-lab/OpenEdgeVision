@@ -1,24 +1,89 @@
+from __future__ import annotations
+
+import logging
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+
 from app.config import settings
+
+
 from app.routers.health import router as health_router
+from app.routers.plugins import router as plugins_router
 from app.routers.streams import router as streams_router
+from app.routers.frame_provider import (
+    router as frame_provider_router,
+)
+from app.routers.pipeline import ( 
+    router as pipeline_router,
+)
+
+from app.plugins import register_builtin_plugins
+
+
+from app.core.stream_config import DEFAULT_STREAMS
+
+from app.services.frame_provider_service import (
+    frame_provider_service,
+)
+
+
+logging.basicConfig(
+    level=logging.INFO
+)
+
+
+logger = logging.getLogger(__name__)
+
+
+
+@asynccontextmanager
+async def lifespan(
+    app: FastAPI,
+):
+
+    logger.info(
+        "Starting OpenEdge Vision backend"
+    )
+
+
+    #
+    # Day6 Plugin Framework
+    #
+    register_builtin_plugins()
+
+
+    #
+    # Day7 FrameProvider
+    #
+    frame_provider_service.initialize(
+        DEFAULT_STREAMS
+    )
+
+
+    yield
+
+
+    logger.info(
+        "Stopping OpenEdge Vision backend"
+    )
+
+
+    frame_provider_service.shutdown()
+
 
 
 app = FastAPI(
     title="OpenEdge Vision API",
     version=settings.version,
     description="OpenEdge Vision Edge AI Platform",
+    lifespan=lifespan,
 )
 
 
-# 开发阶段允许 Vue 前端跨域访问 FastAPI。
-# 当前兼容：
-# - localhost
-# - 127.0.0.1
-# - Ubuntu 虚拟机 IP：192.168.111.128
-# - Vite 可能使用的任意开发端口
+
 app.add_middleware(
     CORSMiddleware,
     allow_origin_regex=(
@@ -34,16 +99,40 @@ app.add_middleware(
 )
 
 
-# 注册健康检查接口
-app.include_router(health_router)
 
-# 注册视频流接口
-app.include_router(streams_router)
+#
+# Existing APIs
+#
+app.include_router(
+    health_router
+)
 
 
-@app.get("/", tags=["Root"])
-def root() -> dict[str, str]:
-    """Platform root endpoint."""
+app.include_router(
+    streams_router
+)
+
+
+app.include_router(
+    plugins_router
+)
+
+
+#
+# Day7 New API
+#
+app.include_router(
+    frame_provider_router
+)
+
+app.include_router(
+        pipeline_router
+)
+
+
+
+@app.get("/")
+def root():
 
     return {
         "name": "OpenEdge Vision",

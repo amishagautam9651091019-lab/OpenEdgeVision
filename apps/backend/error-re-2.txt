@@ -1,0 +1,28 @@
+fjut@fjut-VMware-Virtual-Platform:~/openedge/OpenEdgeVision/apps/backend/app/plugins$ sed -n '120,160p' ../../app/services/plugin_service.py 
+                "width": frame_width,
+                "height": frame_height,
+            },
+            stream_name=stream_name,
+            frame_id=frame_id,
+        )
+
+        def predict(
+                self,
+                *,
+                plugin_id:str,
+                frame,
+                frame_id:int,
+                stream_name:str,
+                ):
+            plugin=plugin_registry.get(
+                    plugin_id
+                    )
+            return plugin.predict(
+                    frame,
+                    frame_id=frame_id,
+                    stream_name=stream_name,
+                    )
+
+
+plugin_service = PluginService()
+

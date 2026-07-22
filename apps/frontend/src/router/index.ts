@@ -5,6 +5,7 @@ import DashboardView from '@/views/dashboard/DashboardView.vue'
 import CameraManager from '@/views/cameras/CameraManager.vue'
 import CameraPreview from '@/views/cameras/CameraPreview.vue'
 import ComingSoonView from '@/views/common/ComingSoonView.vue'
+import PluginManager from '@/views/plugins/PluginManager.vue'
 
 const routes = [
   {
@@ -28,11 +29,8 @@ const routes = [
       },
       {
         path: 'plugins',
-        component: ComingSoonView,
-        props: {
-          title: 'AI Plugins',
-          description: '算法插件安装、启停和版本管理。',
-        },
+        name: 'plugins',
+        component: PluginManager,
       },
       {
         path: 'tasks',
