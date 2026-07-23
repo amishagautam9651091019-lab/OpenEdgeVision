@@ -7,14 +7,16 @@ from typing import Any
 from app.plugins.base import BaseVisionPlugin
 from app.plugins.registry import plugin_registry
 from app.schemas.plugin import (
-    BoundingBox,
-    DetectionObject,
-    DetectionResult,
     PluginDevice,
     PluginStatus,
     PluginType,
 )
 
+from app.schemas.detection import (
+    BoundingBox,
+    DetectionObject,
+    DetectionResult,
+    )
 
 class MockDetectorPlugin(BaseVisionPlugin):
     """

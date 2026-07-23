@@ -1,0 +1,67 @@
+import threading
+from typing import Dict, Optional
+
+import asyncio
+from app.services.websocket_manager import manager
+
+from app.schemas.detection import DetectionResult
+
+
+class ResultService:
+
+
+    def __init__(self):
+        self.results: Dict[str, DetectionResult] = {}
+        self.lock = threading.Lock()
+
+
+    def update(
+        self,
+        result: DetectionResult
+    ):
+
+        with self.lock:
+            self.results[result.stream_name] = result
+        try:
+            print(
+                "broadcat loop:",
+                manager.loop
+                )
+
+            if manager.loop:
+
+                asyncio.run_coroutine_threadsafe(
+                    manager.broadcast(
+                        result.stream_name,
+                        result.model_dump()
+                    ),
+                    manager.loop
+            )
+        except Exception as e:
+
+           print(
+               "websocket broadcast error:",
+               repr(e)
+           )
+
+
+
+
+    def get(
+        self,
+        stream_name:str
+    ) -> Optional[DetectionResult]:
+
+        with self.lock:
+            return self.results.get(stream_name)
+
+
+
+    def list_streams(self):
+
+        with self.lock:
+            return list(self.results.keys())
+
+
+
+result_service = ResultService()

@@ -1,0 +1,103 @@
+def predict(
+84-        self,
+85-        frame: Any,
+86-        *,
+87-        frame_id: int = 0,
+88-        stream_name: str = "unknown",
+89-    ) -> DetectionResult:
+90-        """
+91-        模拟目标检测。
+92-        """
+93-        if not self.is_loaded:
+94-            raise RuntimeError(
+95-                f"Plugin {self.plugin_id} is not loaded"
+96-            )
+97-
+98-        start_time = time.perf_counter()
+99-
+100-        width, height = self._get_frame_size(frame)
+101-
+102-        box_width = random.randint(
+103-            self.config["min_box_width"],
+104-            self.config["max_box_width"],
+105-        )
+106-
+107-        box_height = random.randint(
+108-            self.config["min_box_height"],
+109-            self.config["max_box_height"],
+110-        )
+111-
+112-        box_width = min(box_width, max(width - 1, 1))
+113-        box_height = min(box_height, max(height - 1, 1))
+114-
+115-        max_x = max(width - box_width, 0)
+116-        max_y = max(height - box_height, 0)
+117-
+118-        x = random.randint(0, max_x) if max_x > 0 else 0
+119-        y = random.randint(0, max_y) if max_y > 0 else 0
+120-
+121-        confidence = round(
+122-            random.uniform(
+123-                self.config["confidence_threshold"],
+124-                0.99,
+125-            ),
+126-            3,
+127-        )
+128-
+129-        detection = DetectionObject(
+130-            class_id=0,
+131-            class_name="mock-target",
+132-            confidence=confidence,
+133-            bbox=BoundingBox(
+134-                x=x,
+135-                y=y,
+136-                width=box_width,
+137-                height=box_height,
+138-            ),
+139-        )
+140-
+141-        inference_time_ms = (
+142-            time.perf_counter() - start_time
+143-        ) * 1000
+144-
+145-        return DetectionResult(
+146-            frame_id=frame_id,
+147-            timestamp=time.time(),
+148-            stream_name=stream_name,
+149-            plugin_id=self.plugin_id,
+150-            inference_time_ms=round(
+151-                inference_time_ms,
+152-                3,
+153-            ),
+154-            detections=[detection],
+155-        )
+156-
+157-    @staticmethod
+158-    def _get_frame_size(
+159-        frame: Any,
+160-    ) -> tuple[int, int]:
+161-        """
+162-        获取输入图像尺寸。
+163-
+164-        OpenCV/NumPy 图像 shape 通常是：
+165-        (height, width, channels)
+166-        """
+167-        shape = getattr(frame, "shape", None)
+168-
+169-        if shape is None or len(shape) < 2:
+170-            return 1280, 720
+171-
+172-        width = int(shape[1])
+173-        height = int(shape[0])
+174-
+175-        if width <= 0 or height <= 0:
+176-            return 1280, 720
+177-
+178-        return width, height
+179-
+180-
+181-plugin_registry.register(
+182-    MockDetectorPlugin(),
+183-    replace=True,
+184-)
+

@@ -14,11 +14,22 @@ from app.services.plugin_service import (
     plugin_service,
 )
 
+from app.services.result_service import (
+    result_service,
+)
+
+from app.services.detection_converter import (
+    detection_converter,
+)
+
+from app.schemas.detection import DetectionResult
+
 
 logger = logging.getLogger(__name__)
 
 
 class PipelineService:
+
     """
     OpenEdge Vision 推理流水线。
 
@@ -27,14 +38,7 @@ class PipelineService:
     1. 获取视频最新帧
     2. 调用 AI Plugin
     3. 返回检测结果
-
-    不负责:
-
-    - 视频读取
-    - 插件管理
-    - 模型加载
     """
-
 
 
     def infer(
@@ -44,21 +48,7 @@ class PipelineService:
         plugin_id: str,
         frame_id: int | None = None,
     ) -> dict[str, Any]:
-        """
-        执行一次推理。
 
-        Args:
-
-            stream_name:
-                视频流名称
-
-            plugin_id:
-                AI插件ID
-
-            frame_id:
-                可选指定帧编号
-
-        """
 
         start_time = time.perf_counter()
 
@@ -96,7 +86,7 @@ class PipelineService:
 
 
         #
-        # 3. 补充 Pipeline 信息
+        # 3. Pipeline耗时
         #
         cost = (
             time.perf_counter()
@@ -105,15 +95,45 @@ class PipelineService:
         ) * 1000
 
 
+        #
+        # 4. 转换标准DetectionResult
+        #
+        if isinstance(result,DetectionResult):
+            result.pipeline_time_ms=round (
+                    cost,
+                    3
+            )
+            standard_result=result
+        else:
+            standard_result=(
+                    detection_converter.convert(
+                        {
+                            **result,
+                            "pipeline_time_ms":
+                                round(cost,3)
+                        }
+                    )
+                )
+
+
+        #
+        # 5. 保存最新检测结果
+        #
+        result_service.update(
+            standard_result
+        )
+
+
+        #
+        # 保留Day7返回格式
+        #
         return {
 
             "stream_name":
                 stream_name,
 
-
             "plugin_id":
                 plugin_id,
-
 
             "frame_id":
                 snapshot.frame_id,

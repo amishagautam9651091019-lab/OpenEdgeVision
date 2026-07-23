@@ -29,6 +29,12 @@ from app.services.frame_provider_service import (
     frame_provider_service,
 )
 
+from app.routers import results
+
+from app.routers import websocket
+
+from app.routers.websocket import router as websocket_router
+
 
 logging.basicConfig(
     level=logging.INFO
@@ -104,6 +110,11 @@ app.add_middleware(
 # Existing APIs
 #
 app.include_router(
+        results.router
+)
+
+
+app.include_router(
     health_router
 )
 
@@ -118,6 +129,7 @@ app.include_router(
 )
 
 
+
 #
 # Day7 New API
 #
@@ -128,6 +140,17 @@ app.include_router(
 app.include_router(
         pipeline_router
 )
+
+app.include_router(
+        websocket.router
+)
+
+print("DEBUG websocket routes:")
+for r in websocket.router.routes:
+    print(
+       type(r).__name__,
+       getattr(r,"path",None)
+    )
 
 
 
