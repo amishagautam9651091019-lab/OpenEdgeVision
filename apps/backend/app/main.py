@@ -35,6 +35,8 @@ from app.routers import websocket
 
 from app.routers.websocket import router as websocket_router
 
+from app.routers import websocket_status
+
 
 logging.basicConfig(
     level=logging.INFO
@@ -143,6 +145,10 @@ app.include_router(
 
 app.include_router(
         websocket.router
+)
+
+app.include_router(
+        websocket_status.router
 )
 
 print("DEBUG websocket routes:")
