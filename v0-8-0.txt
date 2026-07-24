@@ -1,0 +1,122 @@
+(.venv) fjut@fjut-VMware-Virtual-Platform:~/openedge/OpenEdgeVision$ tree -L 3
+.
+├── apps
+│   ├── backend
+│   │   ├── app
+│   │   ├── err-mock.txt
+│   │   ├── error-re-2.txt
+│   │   ├── error-re.txt
+│   │   ├── pwd-router.txt
+│   │   ├── re-pipeline-service.txt
+│   │   ├── re-pipeline.txt
+│   │   ├── requirements.txt
+│   │   ├── re-result_service.txt
+│   │   ├── re-websocket_manager.txt
+│   │   ├── re-websockt.txt
+│   │   ├── test-mediamtxcli.py
+│   │   ├── test_router_fin.py
+│   │   ├── test_router.py
+│   │   ├── test-rout.py
+│   │   ├── test-rout-websocket-inclu.py
+│   │   ├── test-rout-websocket-new.py
+│   │   ├── test-rout-websocket.py
+│   │   ├── tests
+│   │   ├── tests.manual.test_frame_provider
+│   │   ├── test-websocket-manager-all.py
+│   │   ├── test-websocket-manager.py
+│   │   └── tree.txt
+│   ├── frontend
+│   │   ├── dist
+│   │   ├── env.d.ts
+│   │   ├── eslint.config.ts
+│   │   ├── index.html
+│   │   ├── node_modules
+│   │   ├── package.json
+│   │   ├── package-lock.json
+│   │   ├── public
+│   │   ├── README.md
+│   │   ├── result.txt
+│   │   ├── src
+│   │   ├── tsconfig.app.json
+│   │   ├── tsconfig.json
+│   │   ├── tsconfig.node.json
+│   │   └── vite.config.ts
+│   └── gateway
+├── assets
+├── Changelog.md
+├── config
+│   ├── mediamtx.yml
+│   └── mediamtx.yml.backup
+├── data
+│   ├── events
+│   ├── recordings
+│   └── snapshots
+├── datasets
+│   ├── parking
+│   ├── small_target
+│   └── smoke
+├── deploy
+│   ├── docker
+│   └── scripts
+│       ├── push_test_video.sh
+│       └── relay_camera.sh
+├── docker
+├── docker-compose.yml
+├── docs
+│   ├── api
+│   ├── api.md
+│   ├── architecture
+│   ├── architecture.md
+│   ├── benchmark.md
+│   ├── database
+│   ├── deployment
+│   ├── design
+│   ├── plugin
+│   ├── roadmap.md
+│   ├── sprint.md
+│   └── test
+│       └── sprint1_20260715_134827
+├── gitadd.txt
+├── launch.md
+├── LICENSE
+├── logs
+├── models
+│   ├── onnx
+│   ├── rknn
+│   └── tensorrt
+├── node_modules
+├── openedge1.tar.gz
+├── plugins
+│   ├── parking
+│   │   └── model
+│   ├── sample
+│   │   ├── config.yaml
+│   │   ├── manifest.yaml
+│   │   ├── model
+│   │   └── plugin.py
+│   ├── small_target
+│   │   └── model
+│   └── smoke
+│       └── model
+├── README.md
+├── scripts
+│   ├── benchmark.sh
+│   ├── clean.sh
+│   ├── run_all.sh
+│   ├── run_backend.sh
+│   ├── runfrontend.sh
+│   └── stop_all.sh
+├── sdk
+│   ├── cpp
+│   └── python
+├── services
+│   ├── event
+│   ├── inference
+│   ├── media
+│   ├── plugin
+│   └── task
+├── tests
+├── third_party
+└── tools
+
+62 directories, 57 files
