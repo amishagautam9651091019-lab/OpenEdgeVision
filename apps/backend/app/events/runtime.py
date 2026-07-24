@@ -1,3 +1,4 @@
+import asyncio
 import logging
 
 from app.events import EventBus
@@ -7,10 +8,14 @@ from app.events.consumers import WebSocketConsumer
 logger = logging.getLogger(__name__)
 
 
+_current_runtime = None
+_main_loop = None
+
+
+
 class EventRuntime:
     """
     OpenEdgeVision事件运行时
-
 
     管理：
 
@@ -18,19 +23,9 @@ class EventRuntime:
 
     2. Consumer注册
 
-
     当前Consumer:
 
     - WebSocketConsumer
-
-    后续:
-
-    - StorageConsumer
-
-    - AlarmConsumer
-
-    - CloudSyncConsumer
-
     """
 
     def __init__(
@@ -56,10 +51,8 @@ class EventRuntime:
         )
 
 
+
     def register_consumers(self):
-        """
-        注册事件消费者
-        """
 
         self.bus.subscribe(
             "detection",
@@ -67,9 +60,47 @@ class EventRuntime:
         )
 
 
+
     def get_bus(self):
-        """
-        获取EventBus实例
-        """
 
         return self.bus
+
+
+
+
+
+def set_runtime(runtime):
+
+    global _current_runtime
+
+    _current_runtime = runtime
+
+
+
+
+
+def get_event_bus():
+
+    if _current_runtime is None:
+
+        return None
+
+    return _current_runtime.get_bus()
+
+
+
+
+
+def set_loop(loop):
+
+    global _main_loop
+
+    _main_loop = loop
+
+
+
+
+
+def get_loop():
+
+    return _main_loop

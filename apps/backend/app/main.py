@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import asyncio
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -37,6 +38,13 @@ from app.routers.websocket import router as websocket_router
 
 from app.routers import websocket_status
 
+from app.services.websocket_manager import manager
+
+from app.events.runtime import ( 
+    EventRuntime,
+    set_runtime,
+    set_loop,
+)
 
 logging.basicConfig(
     level=logging.INFO
@@ -68,6 +76,30 @@ async def lifespan(
     #
     frame_provider_service.initialize(
         DEFAULT_STREAMS
+    )
+
+    #
+    #Day 8 Event Bus Runtime
+    #
+
+    app.state.websocket_manager=manager
+
+    event_runtime = EventRuntime(
+            manager
+    )
+
+    set_runtime(
+        event_runtime
+    )
+
+    set_loop(
+        asyncio.get_running_loop()
+    )
+
+    app.state.event_runtime=event_runtime
+
+    logger.info(
+            "EventRuntime initialized"
     )
 
 
