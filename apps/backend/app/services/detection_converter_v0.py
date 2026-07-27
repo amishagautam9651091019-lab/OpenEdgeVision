@@ -1,4 +1,4 @@
-from app.schemas.ai import (
+from app.schemas.detection import (
     DetectionResult,
     DetectionObject,
     BoundingBox,
