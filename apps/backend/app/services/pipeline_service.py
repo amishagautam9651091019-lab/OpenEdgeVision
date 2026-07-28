@@ -11,30 +11,33 @@ from app.services.frame_provider_service import (
     frame_provider_service,
 )
 
+
 from app.services.plugin_service import (
     plugin_service,
 )
+
 
 from app.services.result_service import (
     result_service,
 )
 
+
 from app.services.detection_converter import (
     detection_converter,
 )
 
-from app.schemas.detection import DetectionResult
-
 
 from app.events import DetectionEvent
+
+
 from app.events.runtime import (
-        get_event_bus,
-        get_loop,
+    get_event_bus,
+    get_loop,
 )
 
 
-
 logger = logging.getLogger(__name__)
+
 
 
 class PipelineService:
@@ -42,12 +45,17 @@ class PipelineService:
     """
     OpenEdge Vision 推理流水线。
 
+    Day10 AI Protocol v1.0版本。
+
     职责:
 
-    1. 获取视频最新帧
-    2. 调用 AI Plugin
-    3. 返回检测结果
-    4. 发布检测事件
+    1. 获取视频帧
+    2. 调用AI Plugin
+    3. Raw Result转换AI Protocol
+    4. 保存结果
+    5. 发布EventBus事件
+
+    Plugin不负责协议生成。
     """
 
 
@@ -86,14 +94,19 @@ class PipelineService:
 
 
         #
-        # 2. 调用 Plugin
+        # 2. 调用AI Plugin
         #
-        result = (
+        raw_result = (
             plugin_service.predict(
+
                 plugin_id=plugin_id,
+
                 frame=snapshot.frame,
+
                 frame_id=snapshot.frame_id,
+
                 stream_name=stream_name,
+
             )
         )
 
@@ -103,48 +116,44 @@ class PipelineService:
         # 3. Pipeline耗时
         #
         cost = (
+
             time.perf_counter()
+
             -
+
             start_time
+
         ) * 1000
 
 
 
         #
-        # 4. 转换标准DetectionResult
+        # 4. 统一转换AI Protocol v1.0
         #
-        if isinstance(
-            result,
-            DetectionResult
-        ):
+        standard_result = (
+            detection_converter.convert(
 
-            result.pipeline_time_ms = round(
-                cost,
-                3
+                {
+
+                    **raw_result,
+
+
+                    "pipeline_time_ms":
+
+                        round(
+                            cost,
+                            3
+                        )
+
+                }
+
             )
-
-            standard_result = result
-
-
-        else:
-
-            standard_result = (
-                detection_converter.convert(
-                    {
-                        **result,
-                        "pipeline_time_ms":
-                            round(
-                                cost,
-                                3
-                            )
-                    }
-                )
-            )
+        )
 
 
 
         #
-        # 5. 保存最新检测结果
+        # 5. 保存最新结果
         #
         result_service.update(
             standard_result
@@ -153,7 +162,7 @@ class PipelineService:
 
 
         #
-        # 6. Day8 EventBus事件发布
+        # 6. 发布AI Detection Event
         #
         event_bus = get_event_bus()
 
@@ -169,59 +178,65 @@ class PipelineService:
 
                 plugin_id=plugin_id,
 
-                data={
 
-                    "frame_id":
-                        snapshot.frame_id,
-
-
-                    "result":
-                        standard_result.model_dump()
-
-                }
+                data=(
+                    standard_result.model_dump()
+                )
 
             )
 
-        loop=get_loop()
 
-        if loop:
-            asyncio.run_coroutine_threadsafe(
-                event_bus.publish(
-                    event
-                ),
-                loop
-            )
+            loop = get_loop()
+
+
+            if loop:
+
+                asyncio.run_coroutine_threadsafe(
+
+                    event_bus.publish(
+                        event
+                    ),
+
+                    loop
+
+                )
 
 
 
         #
-        # 保留Day7返回格式
+        # 7. API返回统一协议
         #
         return {
 
+
             "stream_name":
+
                 stream_name,
 
 
             "plugin_id":
+
                 plugin_id,
 
 
             "frame_id":
+
                 snapshot.frame_id,
 
 
             "pipeline_time_ms":
+
                 round(
                     cost,
-                    3,
+                    3
                 ),
 
 
             "result":
-                result,
-        }
 
+                standard_result.model_dump()
+
+        }
 
 
 
