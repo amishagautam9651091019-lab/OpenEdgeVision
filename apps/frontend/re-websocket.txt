@@ -1,0 +1,121 @@
+import type {
+    DetectionEvent
+}
+from '@/types/detection'
+
+
+
+type MessageCallback =
+    (
+        event:DetectionEvent
+    )=>void
+
+
+
+
+export class WebSocketService {
+
+
+    private socket:
+        WebSocket | null = null
+
+
+
+    private url:string
+
+
+
+    private callback:
+        MessageCallback | null = null
+
+
+
+    constructor(
+        url:string
+    ){
+
+        this.url=url
+
+    }
+
+
+
+    connect(){
+
+
+        if(this.socket){
+
+            return
+
+        }
+
+
+
+        this.socket =
+            new WebSocket(
+                this.url
+            )
+
+
+
+        this.socket.onopen=()=>{
+
+            console.log(
+                "WebSocket connected:",
+                this.url
+            )
+
+        }
+
+
+
+        this.socket.onmessage=
+        (
+            message
+        )=>{
+
+
+            try{
+
+
+                const data:
+                    DetectionEvent =
+                    JSON.parse(
+                        message.data
+                    )
+
+
+
+                if(this.callback){
+
+                    this.callback(
+                        data
+                    )
+
+                }
+
+
+
+            }catch(error){
+
+
+                console.error(
+                    "WebSocket parse error",
+                    error
+                )
+
+            }
+
+
+        }
+
+
+
+        this.socket.onerror=
+        (
+            error
+        )=>{
+
+
+            console.error(
+

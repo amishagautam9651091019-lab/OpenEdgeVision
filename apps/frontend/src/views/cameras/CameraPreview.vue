@@ -43,7 +43,7 @@
 
 
           <el-tag type="info">
-            WebRTC
+            WebRTC + AI
           </el-tag>
 
 
@@ -52,9 +52,9 @@
       </template>
 
 
-      <!-- 视频播放器 -->
+      <!-- AI视频播放器 -->
 
-      <VideoPlayer
+      <AIStreamPlayer
         :stream-name="streamName"
       />
 
@@ -188,7 +188,11 @@ import {
 } from 'vue-router'
 
 
-import VideoPlayer from '@/components/video/VideoPlayer.vue'
+import VideoPlayer 
+from '@/components/video/VideoPlayer.vue'
+
+import AIStreamPlayer
+from '@/components/video/AIStreamPlayer.vue'
 
 
 import {
@@ -243,8 +247,6 @@ const stream = computed<StreamInfo>(()=>{
 
   }
 
-
-  // 防止接口未加载完成导致页面报错
 
   return {
 
